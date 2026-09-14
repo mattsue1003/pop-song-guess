@@ -36,6 +36,10 @@ padding:20px 22px;display:flex;flex-direction:column;gap:14px}
 .bdg.cat{background:#E4F2F3;color:#046A73}
 .bdg.yr{background:#FDECD8;color:#9A5B12}
 .clue h2{margin:0;font-size:clamp(20px,2vw,26px);line-height:1.5;font-weight:800}
+.hints{display:flex;flex-direction:column;gap:10px}
+.hcard{background:#FBF5EA;border:2px solid var(--line);border-radius:14px;padding:12px 16px}
+.hcard b{display:block;font-size:15px;color:#046A73;margin-bottom:2px}
+.hcard p{margin:0;font-size:clamp(19px,1.8vw,24px);font-weight:800;line-height:1.5}
 
 .clue.solo{justify-content:center}
 .clue.solo .player{margin-top:0}
@@ -186,8 +190,7 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
   <div class="gmain">
     <div class="clue solo">
       <div id="cbText" class="hidden">
-        <div class="badges"><span class="bdg cat" id="cbCat">男聲經典</span><span class="bdg yr" id="cbYr">2003</span></div>
-        <h2 id="cbHint">周杰倫作曲、作詞，收錄在《葉惠美》。前奏一下，全場都會跟著唱。</h2>
+        <div class="hints" id="hintList"></div>
       </div>
       <div class="player">
         <button class="play" id="play">▶</button>
@@ -209,9 +212,8 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
         <div class="t2">猜不出來，再按下面的「💡 給提示」<br>一次給一點，不要一下子講完</div>
         <button class="btn shout" id="shout">🙌 有人喊對了！</button>
       </div>
-      <div class="opts hidden" id="opts"><button class="opt" data-t="晴天">晴天</button><button class="opt" data-t="倒帶">倒帶</button><button class="opt" data-t="知足">知足</button><button class="opt" data-t="小情歌">小情歌</button></div>
       <div class="grow">
-        <button class="btn hint" id="hint">💡 給提示①：四個選項</button>
+        <button class="btn hint" id="hint">💡 提示①：第一段歌詞</button>
         <button class="btn ghost" id="show">公布答案</button>
         <button class="btn" id="next">下一題 ▶</button>
       </div>
@@ -318,17 +320,16 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
   <ol>
     <li><b>先播，不要先講。</b>畫面一開始只有播放鍵，沒有選項也沒有文字線索。按下大按鈕播前奏（預設 15 秒），讓大家自由喊出歌名——這一步的回憶效果最好。</li>
     <li>猜不出來就按「↻ 再播一次」，或切成「整段 30 秒」多聽一點。</li>
-    <li>還是想不起來，按「💡 給提示①」出現<b>四個選項</b>，變成四選一。</li>
-    <li>再卡住，按「💡 給提示②」才出現<b>年代和背景文字</b>。一次給一點，不要一下子講完。</li>
-    <li>如果在還沒給選項時就有人喊對，按綠色的「🙌 有人喊對了！」——會記一分，並給一個「只聽前奏就猜到」的徽章。</li>
-    <li>有選項之後，請大家舉手或直接喊。人多可以分兩組計分。</li>
+    <li>想不起來就按提示，一次給一點：<b>提示①第一段歌詞 → 提示②第二段歌詞 → 提示③歌手是誰 → 提示④歌名第一個字</b>。不要一下子全給完。</li>
+    <li>有人喊對就按綠色的「🙌 有人喊對了！」記一分。完全沒用提示、只聽前奏就猜到的話，還會多一個徽章。</li>
+    <li>大家直接喊出歌名，猜對就按綠色鈕記分。人多可以分兩組搶答計分，氣氛更嗨。</li>
     <li>按下答案，跳出視窗公布：原唱、年代、三個小知識。</li>
     <li>唸出「💬 一起聊聊」那句，把話丟出去，讓大家自己接下去講。</li>
     <li>聊得起來就按「▶ 播完整版」放 YouTube 一起唱，聊不起來就下一題。</li>
   </ol>
   <h3>幾個實務提醒</h3>
   <ul>
-    <li><b>提示能不給就不給。</b>只聽前奏就想起來的那種反應，是這個活動最有價值的一刻；一給選項就變成送分題了。答對時如果沒用到文字線索，畫面會給一個小徽章。</li>
+    <li><b>提示能不給就不給。</b>只聽前奏就想起來的反應最珍貴；歌詞一次只給一段，歌手和歌名首字不到最後不給。完全沒用提示就答對，畫面會給一個小徽章。</li>
     <li><b>不用二十題全跑完。</b>一場團康（約 1 小時），跑 8～10 題、每題聊透，比趕完二十題有用。</li>
     <li><b>猜完一定要放來唱。</b>猜對的成就感加上大合唱，氣氛才會整個嗨起來。</li>
     <li><b>坐得遠的朋友</b>坐前面，音量大但不要爆音，前奏可以多播兩三次。</li>
@@ -341,7 +342,6 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
   <ul>
     <li><b>P</b>：播放／暫停前奏</li>
     <li><b>H</b>：給下一層提示</li>
-    <li><b>1 2 3 4</b>：選答案</li>
     <li><b>Enter / 空白鍵</b>：公布答案，再按一次跳下一題</li>
     <li><b>Esc</b>：關掉彈出視窗</li>
   </ul>
@@ -350,83 +350,83 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
 <script>
 const CATS={A:"男聲經典",B:"女聲經典",C:"團體樂團"};
 const SONGS=[
-{t:"晴天",id:"535824738",ver:"周杰倫 原唱",s:"周杰倫",y:"2003",c:"A",
+{t:"晴天",id:"535824738",ver:"周杰倫 原唱",s:"周杰倫",y:"2003",c:"A",l1:"故事的小黃花，從出生那年就飄著",l2:"為你翹課的那一天，花落的那一天",
  hint:"收錄在《葉惠美》專輯，前奏的吉他一響全場都會唱，是畢業季必播歌。",
  f:["2003 年專輯《葉惠美》主打，周杰倫作曲、作詞","前奏吉他一響，KTV 整間包廂都會跟著唱","MV 在淡水取景，講校園裡來不及說出口的喜歡"],
  q:"你的學生時代，有沒有一首一聽前奏就想到某個人的歌？"},
-{t:"七里香",id:"536115195",ver:"周杰倫 原唱",s:"周杰倫",y:"2004",c:"A",
+{t:"七里香",id:"536115195",ver:"周杰倫 原唱",s:"周杰倫",y:"2004",c:"A",l1:"窗外的麻雀，在電線桿上多嘴",l2:"秋刀魚的滋味，貓跟你都想了解",
  hint:"同名專輯主打，方文山寫的詩意歌詞，秋天加上七里香的花香。",
  f:["2004 年同名專輯《七里香》主打，周杰倫作曲、方文山作詞","歌名真的是一種花：七里香，秋天開花香氣很濃","那年周杰倫橫掃各大頒獎典禮，這首是巡演必唱曲"],
  q:"方文山的歌詞，你最喜歡哪一句？"},
-{t:"青花瓷",id:"536030695",ver:"周杰倫 原唱",s:"周杰倫",y:"2007",c:"A",
+{t:"青花瓷",id:"536030695",ver:"周杰倫 原唱",s:"周杰倫",y:"2007",c:"A",l1:"素胚勾勒出青花，筆鋒濃轉淡",l2:"天青色等煙雨，而我在等你",
  hint:"中國風代表作，歌詞有青花瓷、宣紙、仕女圖，拿下金曲獎年度歌曲。",
  f:["2007 年專輯《我很忙》主打，方文山作詞","拿下第 19 屆金曲獎年度歌曲獎","把青花瓷、宣紙、楷書、仕女圖全寫進一首歌裡"],
  q:"中國風的歌，你還會唱哪一首？"},
-{t:"告白氣球",id:"1118757877",ver:"周杰倫 原唱",s:"周杰倫",y:"2016",c:"A",
+{t:"告白氣球",id:"1118757877",ver:"周杰倫 原唱",s:"周杰倫",y:"2016",c:"A",l1:"塞納河畔，左岸的咖啡",l2:"親愛的，愛上你從那天起",
  hint:"寫給女兒的甜蜜情歌，MV 在巴黎拍，婚禮和畢業告白超常被點播。",
  f:["2016 年專輯《周杰倫的床邊故事》主打","MV 遠赴巴黎取景，塞納河畔告白畫面超經典","婚禮、畢業告白場合點播率最高的一首"],
  q:"如果要告白，你會選這首還是別首？"},
-{t:"江南",id:"1071753628",ver:"林俊傑 原唱",s:"林俊傑",y:"2004",c:"A",
+{t:"江南",id:"1071753628",ver:"林俊傑 原唱",s:"林俊傑",y:"2004",c:"A",l1:"風到這裡就是黏，黏住過客的思念",l2:"圈圈圓圓圈圈，天天年年天天",
  hint:"林俊傑的成名曲，中國風加 R&B，副歌圈圈圓圓圈圈人人都會。",
- f:["2004 年專輯《第二天堂》主打，林俊傑作曲","靠這首歌拿下金曲獎最佳新人，一炮而紅","副歌圈圈圓圓圈圈是 KTV 大合唱段落"],
+ f:["2004 年專輯《第二天堂》主打，林俊傑作曲","讓林俊傑從新人一躍成一線歌手","副歌圈圈圓圓圈圈是 KTV 大合唱段落"],
  q:"林俊傑和周杰倫，你站哪一邊？"},
-{t:"童話",id:"165274273",ver:"光良 原唱",s:"光良",y:"2005",c:"A",
+{t:"童話",id:"165274273",ver:"光良 原唱",s:"光良",y:"2005",c:"A",l1:"忘了有多久，再沒聽到你說你最愛的故事",l2:"我願變成童話裡，你愛的那個天使",
  hint:"光良最紅的一首，鋼琴前奏一出就知道，KTV 哭腔必點。",
  f:["2005 年同名專輯《童話》主打，光良作曲、作詞","全亞洲銷量破百萬張，被翻唱成多國語言","光良原本是無印良品的一員，單飛後靠這首大翻紅"],
  q:"有沒有哪首歌是你失戀時單曲循環的？"},
-{t:"勇氣",id:"181204540",ver:"梁靜茹 原唱",s:"梁靜茹",y:"2000",c:"B",
+{t:"勇氣",id:"181204540",ver:"梁靜茹 原唱",s:"梁靜茹",y:"2000",c:"B",l1:"終於做了這個決定，別人怎麼說我不理",l2:"愛真的需要勇氣，來面對流言蜚語",
  hint:"梁靜茹的代表作，唱出告白需要的勇氣，畢業和表白必唱。",
  f:["2000 年專輯《勇氣》主打，光良作曲","這首歌讓梁靜茹坐穩情歌天后位置","KTV 告白前壯膽專用曲"],
  q:"你做過最需要勇氣的一件事是什麼？"},
-{t:"小幸運",id:"1017697311",ver:"田馥甄 原唱",s:"田馥甄",y:"2015",c:"B",
+{t:"小幸運",id:"1017697311",ver:"田馥甄 原唱",s:"田馥甄",y:"2015",c:"B",l1:"我聽見雨滴落在青青草地",l2:"愛上你的時候還不懂感情",
  hint:"電影《我的少女時代》主題曲，校園青春加初戀，全台大合唱。",
  f:["2015 年電影《我的少女時代》主題曲","JerryC 作曲，徐世珍、吳輝福作詞，田馥甄演唱","入圍金馬獎最佳原創電影歌曲，點閱破億"],
  q:"你的青春裡，有沒有一個徐太宇或林真心？"},
-{t:"倒帶",id:"339414579",ver:"蔡依林 原唱",s:"蔡依林",y:"2004",c:"B",
+{t:"倒帶",id:"339414579",ver:"蔡依林 原唱",s:"蔡依林",y:"2004",c:"B",l1:"我受夠了等待，你所謂的安排",l2:"終於看開，愛回不來",
  hint:"蔡依林轉型代表作，終於看開愛回不來，全場都會背。",
- f:["2004 年專輯《城堡》主打，陶喆作曲、作詞","MV 拍成穿越小劇場，當年紅到不行","是蔡依林從少男殺手轉型實力派的關鍵歌"],
+ f:["2004 年專輯《城堡》主打，周杰倫作曲、方文山作詞","劇情版 MV 像小電影一樣，當年紅到不行","是蔡依林從少男殺手轉型實力派的關鍵歌"],
  q:"如果人生可以倒帶，你最想回到哪一天？"},
-{t:"日不落",id:"1725226209",ver:"蔡依林 原唱",s:"蔡依林",y:"2007",c:"B",
+{t:"日不落",id:"1725226209",ver:"蔡依林 原唱",s:"蔡依林",y:"2007",c:"B",l1:"河水像油畫一樣安靜",l2:"我要送你日不落的想念",
  hint:"翻唱自歐洲舞曲，蔡依林招牌旋轉舞步，尾牙和迎新嗨歌必備。",
  f:["2007 年專輯《特務J》主打，原曲改編自 BWO 的 Sunshine in the Rain","招牌旋轉舞讓全台跟著轉","尾牙、迎新嗨歌排行榜常勝軍"],
  q:"你跳過最嗨的一次舞是什麼時候？"},
-{t:"愛你",id:"1847591251",ver:"王心凌 原唱",s:"王心凌",y:"2004",c:"B",
+{t:"愛你",id:"1847591251",ver:"王心凌 原唱",s:"王心凌",y:"2004",c:"B",l1:"就這樣愛你愛你愛你",l2:"隨時都要一起",
  hint:"王心凌甜心教主成名曲，近年因為浪姐節目又爆紅一次。",
  f:["2004 年同名專輯《愛你》主打","甜美舞曲加可愛舞步，讓王心凌封號甜心教主","2022 年《乘風破浪的姐姐》初舞台再唱，全網回憶殺"],
  q:"甜心教主和舞孃蔡依林，你 pick 誰？"},
-{t:"遇見",id:"280911996",ver:"孫燕姿 原唱",s:"孫燕姿",y:"2003",c:"B",
+{t:"遇見",id:"280911996",ver:"孫燕姿 原唱",s:"孫燕姿",y:"2003",c:"B",l1:"聽見冬天的離開，我在某年某月醒過來",l2:"我遇見誰，會有怎樣的對白",
  hint:"電影《向左走向右走》主題曲，我遇見誰會有怎樣的對白。",
  f:["2003 年電影《向左走向右走》主題曲","林一峰作曲，林秋離、鄞昌隆作詞，孫燕姿演唱","是孫燕姿傳唱度最高的情歌之一"],
  q:"你相信遇見是緣分還是選擇？"},
-{t:"綠光",id:"297994309",ver:"孫燕姿 原唱",s:"孫燕姿",y:"2001",c:"B",
+{t:"綠光",id:"297994309",ver:"孫燕姿 原唱",s:"孫燕姿",y:"2001",c:"B",l1:"期待著一個幸運，和一個衝擊",l2:"觸電般不可思議，像一個奇蹟",
  hint:"孫燕姿最嗨的一首，前奏一下就要跳起來，期待著一個幸運和一個衝擊。",
  f:["2001 年專輯《風箏》主打","跟平常的抒情燕姿完全不同，是電音舞曲","演唱會一唱這首，全場直接站起來"],
  q:"你的提神歌是哪一首？"},
-{t:"戀人未滿",id:"571614544",ver:"S.H.E 原唱",s:"S.H.E",y:"2001",c:"C",
+{t:"戀人未滿",id:"571614544",ver:"S.H.E 原唱",s:"S.H.E",y:"2001",c:"C",l1:"為什麼只和你能聊一整夜",l2:"友達以上，戀人未滿",
  hint:"S.H.E 出道曲，友達以上、戀人未滿這句話就是從這來的。",
  f:["2001 年專輯《女生宿舍》主打，S.H.E 出道曲","原曲改編自 Destiny's Child 的 Brown Eyes","友達以上、戀人未滿這句話就是被這首歌帶紅的"],
  q:"你有過戀人未滿的經驗嗎？"},
-{t:"Super Star",id:"551570912",ver:"S.H.E 原唱",s:"S.H.E",y:"2003",c:"C",
+{t:"Super Star",id:"551570912",ver:"S.H.E 原唱",s:"S.H.E",y:"2003",c:"C",l1:"笑就歌頌，一皺眉頭就心痛",l2:"你是電，你是光，你是唯一的神話",
  hint:"S.H.E 最炸的一首，你是電、你是光，運動會和營隊必播。",
  f:["2003 年同名專輯《Super Star》主打","營隊、運動會、迎新晚會的炒氣氛神曲","施人誠填詞，你是電、你是光全場會唱"],
  q:"S.H.E 三個人你最喜歡誰？"},
-{t:"知足",id:"1081738613",ver:"五月天 原唱",s:"五月天",y:"2005",c:"C",
+{t:"知足",id:"1081738613",ver:"五月天 原唱",s:"五月天",y:"2005",c:"C",l1:"當一陣風吹來，風箏飛上天空",l2:"如果我愛上你的笑容，要怎麼收藏",
  hint:"五月天最催淚的一首，畢業典禮播到全場哭，當一陣風吹來風箏飛上天空。",
  f:["2005 年發行，阿信詞曲","畢業、送舊場合必播曲","五月天演唱會全場大合唱前三名"],
  q:"畢業那天你哭了嗎？"},
-{t:"倔強",id:"183919743",ver:"五月天 原唱",s:"五月天",y:"2004",c:"C",
+{t:"倔強",id:"183919743",ver:"五月天 原唱",s:"五月天",y:"2004",c:"C",l1:"當我和世界不一樣，那就讓我不一樣",l2:"我和我最後的倔強，握緊雙手絕對不放",
  hint:"五月天最熱血的一首，我和我最後的倔強，考試比賽前必聽。",
  f:["2004 年專輯《神的孩子都在跳舞》，阿信詞曲","寫給不服輸的年輕人","學測、比賽、社團成發前的打氣神曲"],
  q:"你最倔強的一次是為了什麼？"},
-{t:"突然好想你",id:"1081381266",ver:"五月天 原唱",s:"五月天",y:"2008",c:"C",
+{t:"突然好想你",id:"1081381266",ver:"五月天 原唱",s:"五月天",y:"2008",c:"C",l1:"最怕朋友突然的關心",l2:"最怕空氣突然安靜",
  hint:"五月天最會唱哭人的情歌，最怕空氣突然安靜，下一句全場接唱。",
  f:["2008 年專輯《後青春期的詩》，阿信詞曲","最怕空氣突然安靜是全台都會接的下一句","KTV 深夜場眼淚保證班"],
  q:"你會在什麼時候突然好想一個人？"},
-{t:"小情歌",id:"1461046348",ver:"蘇打綠 原唱",s:"蘇打綠",y:"2006",c:"C",
+{t:"小情歌",id:"1461046348",ver:"蘇打綠 原唱",s:"蘇打綠",y:"2006",c:"C",l1:"就算大雨讓整座城市顛倒，我會給你懷抱",l2:"這是一首簡單的小情歌",
  hint:"蘇打綠傳唱度最高的一首，吳青峰的嗓音加簡單吉他，表白必用。",
  f:["2006 年專輯《小宇宙》主打，吳青峰詞曲","編曲簡單卻超耐聽，是吉他新手必練曲","蘇打綠靠這首從獨立圈紅到主流"],
  q:"你心中最適合告白的歌是哪首？"},
-{t:"死了都要愛",id:"820255338",ver:"信樂團 原唱",s:"信樂團",y:"2002",c:"C",
+{t:"死了都要愛",id:"820255338",ver:"信樂團 原唱",s:"信樂團",y:"2002",c:"C",l1:"把每天當成是末日來相愛",l2:"死了都要愛，不淋漓盡致不痛快",
  hint:"KTV 最高音挑戰曲，死了都要愛飆不上去會斷氣，全場等你破音。",
  f:["2002 年信樂團同名專輯主打，姚若龍作詞、覃楨作曲","副歌連續高音，是 KTV 玩命挑戰曲","主唱阿信靠這首封高音王"],
  q:"你敢在 KTV 挑戰這首嗎？最高飆到哪？"}
@@ -630,9 +630,6 @@ function nextQ(){
   idx++;
   if(idx>=order.length){ showDone(); return; }
   cur=order[idx]; locked=false; hintLv=0;
-  $("#cbCat").textContent=CATS[cur.c];
-  $("#cbYr").textContent=cur.y;
-  $("#cbHint").textContent=cur.hint;
   applyHint();
   const ok=hasAudio(cur);
   $("#play").disabled=!ok;
@@ -642,30 +639,33 @@ function nextQ(){
     : `請按上面的「📁 本機音樂」選檔，或「🔧 音訊測試」看網路卡在哪。`;
   if(ok&&ctx)getBuffer(cur).catch(()=>{});
   const nx=order[idx+1]; if(nx&&hasAudio(nx)&&ctx)setTimeout(()=>getBuffer(nx).catch(()=>{}),1500);
-  const same=shuffle(SONGS.filter(s=>s!==cur&&s.c===cur.c));
-  const other=shuffle(SONGS.filter(s=>s!==cur&&s.c!==cur.c));
-  const opts=shuffle([cur,...same.concat(other).slice(0,3)]);
-  $("#opts").innerHTML=opts.map(o=>`<button class="opt" data-t="${o.t}">${o.t}</button>`).join("");
   updateBar();
 }
 function applyHint(){
-  $("#cbText").classList.toggle("hidden",hintLv<2);
-  document.querySelector(".clue").classList.toggle("solo",hintLv<2);
-  $("#opts").classList.toggle("hidden",hintLv<1);
-  $("#phold").classList.toggle("hidden",hintLv>=1);
+  $("#cbText").classList.toggle("hidden",hintLv<1);
+  document.querySelector(".clue").classList.toggle("solo",hintLv<1);
+  const cards=[];
+  if(hintLv>=1)cards.push(`<div class="hcard"><b>🎵 歌詞提示①</b><p>「${cur.l1}」</p></div>`);
+  if(hintLv>=2)cards.push(`<div class="hcard"><b>🎵 歌詞提示②</b><p>「${cur.l2}」</p></div>`);
+  if(hintLv>=3)cards.push(`<div class="hcard"><b>🎤 歌手</b><p>${cur.s}</p></div>`);
+  if(hintLv>=4)cards.push(`<div class="hcard"><b>🔤 歌名第一個字</b><p>「${cur.t[0]}」</p></div>`);
+  $("#hintList").innerHTML=cards.join("");
   const b=$("#hint");
-  if(hintLv===0){ b.disabled=false; b.textContent="💡 給提示①：四個選項"; }
-  else if(hintLv===1){ b.disabled=false; b.textContent="💡 給提示②：文字線索"; }
-  else { b.disabled=true; b.textContent="提示都給完了"; }
+  b.disabled=hintLv>=4;
+  if(hintLv===0)b.textContent="💡 提示①：第一段歌詞";
+  else if(hintLv===1)b.textContent="💡 提示②：第二段歌詞";
+  else if(hintLv===2)b.textContent="💡 提示③：歌手是誰";
+  else if(hintLv===3)b.textContent="💡 提示④：歌名第一個字";
+  else b.textContent="提示都給完了";
 }
-$("#hint").onclick=()=>{ if(locked||hintLv>=2)return; hintLv++; applyHint(); };
-$("#shout").onclick=()=>{                      // 有人直接喊出答案，不必先看選項
+$("#hint").onclick=()=>{ if(locked||hintLv>=4)return; hintLv++; applyHint(); };
+$("#shout").onclick=()=>{
   if(!cur||locked)return;
-  hit++; clean++;
-  hintLv=2; applyHint();
-  const b=[...$("#opts").children].find(x=>x.dataset.t===cur.t); if(b)b.classList.add("good");
+  const usedLv=hintLv;
+  hit++; if(usedLv===0)clean++;
+  hintLv=4; applyHint();
   updateBar();
-  reveal(true,0);
+  reveal(true,usedLv);
 };
 
 function updateBar(){
@@ -674,7 +674,7 @@ function updateBar(){
 }
 function reveal(ok,usedLv){
   locked=true; stopAudio();
-  const bonus=(ok===true&&usedLv===0)?"　🏅 只聽前奏就猜到！":(ok===true&&usedLv===1)?"　👏 沒看文字線索":"";
+  const bonus=(ok===true&&usedLv===0)?"　🏅 只聽前奏就猜到！":(ok===true&&usedLv<=2)?"　👏 只看歌詞就猜到！":"";
   $("#rres").textContent=(ok===true?"✅ 答對了！":(ok===false?"正確答案是":"答案揭曉"))+bonus;
   $("#rres").className="mres "+(ok===true?"ok":(ok===false?"no":""));
   $("#rname").textContent=cur.t;
@@ -713,26 +713,14 @@ function showDone(){
   $("#rres").textContent=""; $("#rres").className="mres";
   $("#rname").textContent="全部完成！"; $("#rsub").textContent="";
   $("#rfeat").innerHTML=`<div class="done"><div class="big">${hit} / ${order.length}</div>
-    <p>${msg}</p><p style="font-size:17px;color:#6B7A80">其中 ${clean} 題沒看文字線索就猜到</p></div>`;
+    <p>${msg}</p><p style="font-size:17px;color:#6B7A80">其中 ${clean} 題只聽前奏就猜到</p></div>`;
   $("#rq").textContent="今天這些歌裡面，哪一首最有你的青春回憶？";
   document.querySelector(".talk b").style.display="";
   $("#rsearch").innerHTML=""; $("#mnext").textContent="再玩一次 ↺";
   $("#mnext").style.display=""; $("#modal").classList.remove("hidden");
 }
-$("#opts").onclick=e=>{
-  const b=e.target.closest(".opt"); if(!b||locked||!cur)return;
-  const good=b.dataset.t===cur.t;
-  const usedLv=hintLv;
-  if(good){ hit++; if(usedLv<=1)clean++; b.classList.add("good"); }
-  else{ b.classList.add("bad");
-    [...$("#opts").children].find(x=>x.dataset.t===cur.t).classList.add("good"); }
-  hintLv=2; applyHint();
-  updateBar();
-  setTimeout(()=>reveal(good,usedLv),420);
-};
 $("#show").onclick=()=>{ if(!cur||locked)return;
-  const usedLv=hintLv; hintLv=2; applyHint();
-  const b=[...$("#opts").children].find(x=>x.dataset.t===cur.t); if(b)b.classList.add("good");
+  const usedLv=hintLv; hintLv=4; applyHint();
   reveal(null,usedLv); };
 $("#next").onclick=()=>{ finished?start():nextQ(); };
 $("#mnext").onclick=()=>{ finished?start():nextQ(); };
@@ -754,8 +742,6 @@ document.addEventListener("keydown",e=>{
     if(modalOpen()&&$("#mnext").style.display==="none"){closeModal();return;}
     if(finished){start();return;}
     locked?nextQ():$("#show").click(); return;}
-  if(["1","2","3","4"].includes(e.key)&&!modalOpen()&&hintLv>=1){
-    const b=$("#opts").children[+e.key-1]; if(b)b.click(); }
 });
 
 /* ================= 曲目表 ================= */
