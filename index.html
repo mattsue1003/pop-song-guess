@@ -153,13 +153,27 @@ padding:11px 17px;font-size:17px;font-weight:800;border:2px solid transparent;wh
   .gtop{padding:7px 10px;gap:7px}
   .gscore{font-size:16px}
   .gtools button{padding:4px 9px;font-size:14px}
-  .gmain{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:10px;padding:10px}
-  .clue{padding:13px 15px;gap:9px;max-height:52vh}
-  .player{padding:12px 10px;gap:8px}
-  .play{width:78px;height:78px;font-size:32px}
-  .opts{gap:10px}
-  .opt{font-size:clamp(19px,5.2vw,26px);border-width:3px;border-radius:15px}
-  .grow .btn{padding:11px 20px;font-size:17px}
+  #v-game{overflow-y:auto}
+  .gmain{display:flex;flex-direction:column;flex:1 0 auto;gap:10px;padding:10px;min-height:0}
+  .clue{padding:13px 15px;gap:9px;max-height:none}
+  .phold{gap:6px;padding:10px 12px}
+  .phold .em{display:none}
+  .phold .t1{font-size:20px}
+  .phold .t2{font-size:14px}
+  .player{padding:12px 10px;gap:8px;margin-top:0}
+  .play{width:72px;height:72px;font-size:30px}
+  .pchip{padding:4px 10px;font-size:13px}
+  .pnote{font-size:12px}
+  .vol input{height:20px}
+  .hintpanel{padding:13px 14px;min-height:170px}
+  .hints{gap:10px}
+  .hcard{padding:12px 14px}
+  .hcard b{font-size:15px;margin-bottom:2px}
+  .hcard p{font-size:clamp(22px,5.5vw,28px)}
+  .hintempty{font-size:18px}
+  .grow{flex-wrap:nowrap;gap:6px}
+  .grow .btn{flex:1 1 0;min-width:0;padding:10px 4px;font-size:14px;white-space:nowrap}
+  .grow .btn.shout{font-size:14px;padding:10px 4px}
   .modal{padding:10px}.mcard{max-height:94vh}
   .mtop{padding:14px 16px 10px}.mbody{padding:13px 16px 12px}.mfoot{padding:10px 16px 14px}
 }
@@ -328,7 +342,7 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
   <ol>
     <li><b>先播，不要先講。</b>畫面一開始只有播放鍵，沒有選項也沒有文字線索。按下大按鈕播前奏（預設 15 秒），讓大家自由喊出歌名——這一步的回憶效果最好。</li>
     <li>猜不出來就按「↻ 再播一次」，或切成「整段 30 秒」多聽一點。</li>
-    <li>想不起來就按提示，一次給一點：<b>提示①第一段歌詞 → 提示②第二段歌詞 → 提示③歌手是誰 → 提示④歌名第一個字</b>。不要一下子全給完。</li>
+    <li>想不起來就按提示，一次給一點：<b>提示①第一段歌詞 → 提示②第二段歌詞 → 提示③歌手是誰 → 提示④歌名第一個字</b>。不要一下子全給完。歌詞裡若出現歌名會自動遮成●●，不怕直接破梗。</li>
     <li>有人喊對就按綠色的「🙌 有人喊對了！」記一分。完全沒用提示、只聽前奏就猜到的話，還會多一個徽章。</li>
     <li>大家直接喊出歌名，猜對就按綠色鈕記分。人多可以分兩組搶答計分，氣氛更嗨。</li>
     <li>按下答案，跳出視窗公布：原唱、年代、三個小知識。</li>
@@ -652,19 +666,21 @@ function nextQ(){
 function applyHint(){
   $("#hintList").classList.toggle("hidden",hintLv<1);
   $("#hintEmpty").classList.toggle("hidden",hintLv>=1);
+  const maskCh=[...cur.t].map(ch=>ch===" "?" ":"●").join("");
+  const mask=txt=>txt.split(cur.t).join(maskCh);
   const cards=[];
-  if(hintLv>=1)cards.push(`<div class="hcard"><b>🎵 歌詞提示①</b><p>「${cur.l1}」</p></div>`);
-  if(hintLv>=2)cards.push(`<div class="hcard"><b>🎵 歌詞提示②</b><p>「${cur.l2}」</p></div>`);
+  if(hintLv>=1)cards.push(`<div class="hcard"><b>🎵 歌詞提示①</b><p>「${mask(cur.l1)}」</p></div>`);
+  if(hintLv>=2)cards.push(`<div class="hcard"><b>🎵 歌詞提示②</b><p>「${mask(cur.l2)}」</p></div>`);
   if(hintLv>=3)cards.push(`<div class="hcard"><b>🎤 歌手</b><p>${cur.s}</p></div>`);
   if(hintLv>=4)cards.push(`<div class="hcard"><b>🔤 歌名第一個字</b><p>「${cur.t[0]}」</p></div>`);
   $("#hintList").innerHTML=cards.join("");
   const b=$("#hint");
+  const HL=["💡 提示①：第一段歌詞","💡 提示②：第二段歌詞","💡 提示③：歌手是誰","💡 提示④：歌名第一個字"];
+  const HS=["💡 提示①","💡 提示②","💡 提示③","💡 提示④"];
+  const sm=window.matchMedia&&matchMedia("(max-width:900px)").matches;
+  $("#shout").textContent=sm?"🙌 喊對了！":"🙌 有人喊對了！";
   b.disabled=hintLv>=4;
-  if(hintLv===0)b.textContent="💡 提示①：第一段歌詞";
-  else if(hintLv===1)b.textContent="💡 提示②：第二段歌詞";
-  else if(hintLv===2)b.textContent="💡 提示③：歌手是誰";
-  else if(hintLv===3)b.textContent="💡 提示④：歌名第一個字";
-  else b.textContent="提示都給完了";
+  b.textContent=hintLv>=4?"提示都給完了":(sm?HS[hintLv]:HL[hintLv]);
 }
 $("#hint").onclick=()=>{ if(locked||hintLv>=4)return; hintLv++; applyHint(); };
 $("#shout").onclick=()=>{
@@ -740,6 +756,7 @@ $("#fs").onclick=()=>{ document.fullscreenElement?document.exitFullscreen()
   :document.documentElement.requestFullscreen().catch(()=>{}); };
 document.addEventListener("fullscreenchange",()=>{
   $("#fs").textContent=document.fullscreenElement?"⤫ 離開全螢幕":"⛶ 全螢幕"; });
+if(window.addEventListener)window.addEventListener("resize",()=>{ if(cur&&!locked)applyHint(); });
 document.addEventListener("keydown",e=>{
   if($("#v-game").classList.contains("hidden"))return;
   const k=(e.key||"").toLowerCase();
