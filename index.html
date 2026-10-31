@@ -257,6 +257,17 @@ td .sbtn{padding:5px 10px;font-size:13px;border-radius:8px}
 h3{color:var(--deep)}
 .dcard{padding-right:70px}
 @media(max-width:900px){.dcard{padding-right:52px}.hero p br{display:none}.dcard.feature .dec{font-size:28px}.dcard .dec small{display:inline-block}}
+/* set groups */
+.ghead{font-size:24px;font-weight:900;color:var(--deep);margin:30px 0 12px;display:flex;align-items:baseline;gap:4px 12px;flex-wrap:wrap;background:#fff;border-radius:18px;padding:12px 20px;box-shadow:0 6px 18px rgba(217,72,15,.14);border-left:8px solid var(--orange)}
+.ghead:first-child{margin-top:0}
+.ghead small{font-size:15px;font-weight:700;color:var(--muted,#8C6248)}
+.dcard.tw .dec{font-size:34px}
+@media(max-width:900px){.ghead{font-size:21px;margin-top:22px}.ghead small{font-size:13px}.dcard.tw .dec{font-size:26px}}
+.jump{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.jump button{all:unset;cursor:pointer;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.7);color:#fff;font-weight:900;font-size:17px;padding:8px 18px;border-radius:999px}
+.jump button:hover,.jump button:focus-visible{background:#fff;color:var(--deep)}
+.ghead{scroll-margin-top:16px}
+@media(max-width:900px){.jump button{font-size:14px;padding:6px 12px}}
 </style>
 </head>
 <body>
@@ -267,11 +278,12 @@ h3{color:var(--deep)}
   <div class="hero">
     <div class="notes">♪ ♫ ♪</div>
     <h1>台灣金曲猜歌</h1>
-    <p>從 50 年代唱到 2026！先選一個年代，聽前奏搶答，<br>朋友聚會、闔家同樂，一秒炒熱氣氛</p>
-    <div class="pill">🎤 每個年代 20 首 · 共 180 首</div>
+    <p>從 50 年代唱到 2026！國語、台語、鄧麗君、鳳飛飛，<br>選一組聽前奏搶答，朋友聚會、闔家同樂一秒炒熱氣氛</p>
+    <div class="pill">🎤 每組 20 首 · 共 300 首</div>
+    <div class="jump" id="jump"></div>
   </div>
   <div class="wrap">
-    <div class="grid" id="sets"></div>
+    <div id="sets"></div>
     <div class="howto">
       <span><i>1</i>選年代</span><span><i>2</i>播前奏大家喊</span><span><i>3</i>猜不到給提示</span><span><i>4</i>公布答案一起唱</span>
     </div>
@@ -417,9 +429,10 @@ h3{color:var(--deep)}
   </ul>
 </div>
 
-<script src="songs.js"></script>
+<script src="songs.js?v=0ff7ee66"></script>
 <script>
 let SONGS=[], setKey=null;
+const solo=()=>setKey&&SETS[setKey].grp==="star";
 
 const $=s=>document.querySelector(s);
 const enc=encodeURIComponent;
@@ -643,12 +656,12 @@ function applyHint(){
     : `<div class="hcard"><b>🎵 歌詞提示${n}</b><p>「${mask(cur["l"+i])}」</p></div>`;
   if(hintLv>=1)cards.push(card("①",1));
   if(hintLv>=2)cards.push(card("②",2));
-  if(hintLv>=3)cards.push(`<div class="hcard"><b>🎤 歌手</b><p>${cur.s}</p></div>`);
+  if(hintLv>=3)cards.push(solo()?`<div class="hcard cl"><b>📅 年代背景</b><p>${cur.y} 年｜${mask(cur.hint)}</p></div>`:`<div class="hcard"><b>🎤 歌手</b><p>${cur.s}</p></div>`);
   if(hintLv>=4)cards.push(`<div class="hcard"><b>🔤 歌名第一個字</b><p>「${cur.t[0]}」</p></div>`);
   $("#hintList").innerHTML=cards.join("");
   const b=$("#hint");
   const kind=i=>cur["k"+i]==="clue"?"線索":"歌詞";
-  const HL=[`💡 提示①：${kind(1)}`,`💡 提示②：${kind(2)}`,"💡 提示③：歌手是誰","💡 提示④：歌名第一個字"];
+  const HL=[`💡 提示①：${kind(1)}`,`💡 提示②：${kind(2)}`,(solo()?"💡 提示③：年代背景":"💡 提示③：歌手是誰"),"💡 提示④：歌名第一個字"];
   const HS=["💡 提示①","💡 提示②","💡 提示③","💡 提示④"];
   const sm=window.matchMedia&&matchMedia("(max-width:900px)").matches;
   $("#shout").textContent=sm?"🙌 喊對了！":"🙌 有人喊對了！";
@@ -774,18 +787,24 @@ if(window.self!==window.top){
   document.getElementById("bnx").onclick=()=>{
     bn.classList.add("hidden"); document.body.classList.remove("hasbanner"); };
 }
-const setLabel=k=>{const m=SETS[k];return k==="classic"?"⭐ 經典精選":`${m.dec} ${m.suf}`;};
+const setLabel=k=>{const m=SETS[k];return k==="classic"?"⭐ 經典精選":m.grp==="tw"?`台語 ${m.dec}`:m.grp==="star"?`${m.dec}特輯`:`${m.dec} ${m.suf}`;};
+const GROUPS=[["pop","🎵 國語流行・年代金曲","從 50 年代唱到 2026，看在場朋友的年紀挑"],["tw","🏮 台語金曲","四個時期的台語大熱門，長輩一聽就會唱"],["star","👑 歌手特輯","整組都是同一位歌后的歌，提示③改成年代背景"]];
 function drawSets(){
-  $("#sets").innerHTML=Object.entries(SETS).map(([k,m])=>{
-    const who=[...new Set(m.songs.map(artistOf))].slice(0,5).join("、");
-    const feat=k==="classic";
-    return `<button class="dcard${feat?" feature":""}" data-set="${k}" style="background:linear-gradient(135deg,${m.c1},${m.c2})">
+  $("#sets").innerHTML=GROUPS.map(([g,title,sub])=>{
+    const cards=Object.entries(SETS).filter(([k,m])=>(m.grp||"pop")===g).map(([k,m])=>{
+      const feat=k==="classic", star=m.grp==="star";
+      const who=star?m.songs.slice(0,4).map(s=>s.t).join("、"):[...new Set(m.songs.map(artistOf))].slice(0,5).join("、");
+      return `<button class="dcard${feat?" feature":""}${m.grp==="tw"?" tw":""}" data-set="${k}" style="background:linear-gradient(135deg,${m.c1},${m.c2})">
       <span class="dec">${feat?"⭐ "+m.dec:m.dec}<small>${m.suf}</small></span>
       <span class="rng">${feat?"原版 · ":""}${m.rng}</span>
       <span class="who">${who}…</span>
-      <span class="go">▶</span><span class="big">♪</span></button>`;
+      <span class="go">▶</span><span class="big">${star?"★":"♪"}</span></button>`;
+    }).join("");
+    return cards?`<h2 class="ghead" id="g-${g}">${title}<small>${sub}</small></h2><div class="grid">${cards}</div>`:"";
   }).join("");
+  $("#jump").innerHTML=GROUPS.filter(([g])=>$("#g-"+g)).map(([g,t])=>`<button data-jump="${g}">${t}</button>`).join("");
 }
+$("#jump").onclick=e=>{const b=e.target.closest("[data-jump]"); if(b)$("#g-"+b.dataset.jump).scrollIntoView({behavior:"smooth",block:"start"});};
 $("#sets").onclick=e=>{const b=e.target.closest("[data-set]"); if(b)openSet(b.dataset.set);};
 function openSet(k){
   if(!SETS[k])return go("home");
